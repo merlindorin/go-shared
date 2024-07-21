@@ -14,5 +14,5 @@ outpkg: "{{.PackageName}}"
 inpackage: True
 
 packages:
-  github.com/hoomy-official/go-shared/pkg:
+  github.com/vanyda-official/go-shared/pkg:
     config: {}

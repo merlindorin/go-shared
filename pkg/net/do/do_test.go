@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/hoomy-official/go-shared/pkg/net/do"
+	"github.com/vanyda-official/go-shared/pkg/net/do"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"

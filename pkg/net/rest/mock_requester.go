@@ -6,7 +6,7 @@ import (
 	context "context"
 	http "net/http"
 
-	do "github.com/hoomy-official/go-shared/pkg/net/do"
+	do "github.com/vanyda-official/go-shared/pkg/net/do"
 
 	mock "github.com/stretchr/testify/mock"
 )

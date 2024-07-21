@@ -1,4 +1,4 @@
-module github.com/hoomy-official/go-shared
+module github.com/vanyda-official/go-shared
 
 go 1.21
 

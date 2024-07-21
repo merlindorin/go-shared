@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/hoomy-official/go-shared/pkg/logger"
+	"github.com/vanyda-official/go-shared/pkg/logger"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
