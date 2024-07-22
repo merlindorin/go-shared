@@ -1,5 +1,7 @@
 # Shared Library Project
 
+[![golangci-lint](https://github.com/vanyda-official/go-shared/actions/workflows/golangci.yml/badge.svg?branch=main)](https://github.com/vanyda-official/go-shared/actions/workflows/golangci.yml)
+
 > This shared library provides various utility functions and structures that can be utilized across different Go
 > projects. The goal of this library is to promote code reuse and to offer a central repository of common code
 > components.
