@@ -9,8 +9,7 @@
 <!-- TOC -->
 * [Shared Library Project](#shared-library-project)
   * [Features](#features)
-  * [Linting](#linting)
-  * [Testing](#testing)
+  * [Develop](#develop)
   * [Contributing](#contributing)
   * [License](#license)
 <!-- TOC -->
@@ -28,23 +27,13 @@ This shared library includes a range of features designed to simplify developmen
 Each feature is encapsulated in its own module within the library, providing a modular approach to using specific
 functionalities.
 
-## Linting
+## Develop
 
 Ensure the quality of the repository met my standards:
 
 ```bash
-task golangci
+task
 ```
-
-## Testing
-
-To test the shared library, navigate to the root directory of the library and run:
-
-```bash
-task go:test
-```
-
-Ensure that all tests pass before integrating the library into your project.
 
 ## Contributing
 

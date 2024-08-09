@@ -21,15 +21,15 @@ type Commons struct {
 
 // Logger initializes a new zap.Logger based on the Development and Level fields in the commons struct.
 // It returns the configured logger or an error if the logging level is invalid or the logger cannot be created.
-func (g *Commons) Logger() (*zap.Logger, error) {
-	level, err := zapcore.ParseLevel(g.Level)
+func (c *Commons) Logger() (*zap.Logger, error) {
+	level, err := zapcore.ParseLevel(c.Level)
 	if err != nil {
-		return nil, fmt.Errorf("cannot parse logger level \"%s\": %w", g.Level, err)
+		return nil, fmt.Errorf("cannot parse logger level \"%s\": %w", c.Level, err)
 	}
 
-	if g.Development {
+	if c.Development {
 		level = zapcore.DebugLevel
 	}
 
-	return logger.New(level, g.Development)
+	return logger.New(level, c.Development)
 }
