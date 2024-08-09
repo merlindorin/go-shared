@@ -7,7 +7,7 @@ require (
 	github.com/alecthomas/kong-yaml v0.2.0
 	github.com/grandcat/zeroconf v1.0.0
 	github.com/koron/go-ssdp v0.0.4
-	github.com/prometheus/client_golang v1.19.0
+	github.com/prometheus/client_golang v1.19.1
 	github.com/stretchr/testify v1.8.2
 	go.uber.org/zap v1.27.0
 	golang.org/x/sync v0.6.0
@@ -28,6 +28,6 @@ require (
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/net v0.21.0 // indirect
 	golang.org/x/sys v0.17.0 // indirect
-	google.golang.org/protobuf v1.32.0 // indirect
+	google.golang.org/protobuf v1.33.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
