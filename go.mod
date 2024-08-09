@@ -3,6 +3,8 @@ module github.com/vanyda-official/go-shared
 go 1.21
 
 require (
+	github.com/alecthomas/kong v0.9.0
+	github.com/alecthomas/kong-yaml v0.2.0
 	github.com/grandcat/zeroconf v1.0.0
 	github.com/koron/go-ssdp v0.0.4
 	github.com/prometheus/client_golang v1.19.0
