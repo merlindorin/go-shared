@@ -1,4 +1,4 @@
-module github.com/vanyda-official/go-shared
+module github.com/merlindorin/go-shared
 
 go 1.21
 

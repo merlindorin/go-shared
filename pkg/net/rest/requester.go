@@ -3,7 +3,7 @@ package rest
 import (
 	"context"
 
-	"github.com/vanyda-official/go-shared/pkg/net/do"
+	"github.com/merlindorin/go-shared/pkg/net/do"
 )
 
 // Requester is an interface that defines the methods for making various types

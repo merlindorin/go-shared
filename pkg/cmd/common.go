@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/vanyda-official/go-shared/pkg/logger"
+	"github.com/merlindorin/go-shared/pkg/logger"
 
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -12,8 +12,8 @@ import (
 // Commons defines the common flags and embedded commands for printing version
 // and licence information, utilized by the command-line interface.
 type Commons struct {
-	Development bool   `short:"D" env:"DEBUG,DEV,DEVELOPMENT" help:"Set to true to enable development mode with debug-level logging."`            //nolint:lll // lll do not understand tags https://github.com/golangci/golangci-lint/issues/3983#issue-1833630800
-	Level       string `short:"l" env:"LOG_LEVEL" help:"Specify the logging level, options are: debug, info, warn, error, fatal." default:"info"` //nolint:lll // same
+	Development bool   `short:"D" env:"DEBUG,DEV,DEVELOPMENT" help:"Set to true to enable development mode with debug-level logging."`
+	Level       string `short:"l" env:"LOG_LEVEL" help:"Specify the logging level, options are: debug, info, warn, error, fatal." default:"info"`
 
 	Version Version `cmd:"" help:"Display version information."`
 	Licence Licence `cmd:"" help:"Show the application's licence."`

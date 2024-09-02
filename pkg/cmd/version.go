@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/vanyda-official/go-shared/pkg/buildinfo"
+	"github.com/merlindorin/go-shared/pkg/buildinfo"
 )
 
 // Version holds detailed build information for an application, including the

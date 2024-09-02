@@ -5,7 +5,7 @@ import (
 	"net/http" // Correct the import path from "net/HTTP" to "net/http"
 	"net/url"
 
-	"github.com/vanyda-official/go-shared/pkg/net/do"
+	"github.com/merlindorin/go-shared/pkg/net/do"
 )
 
 // Rest is a concrete implementation of the Requester interface.
