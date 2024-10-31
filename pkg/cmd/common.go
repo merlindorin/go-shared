@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"golang.org/x/text/message"
 
 	"github.com/merlindorin/go-shared/pkg/logger"
 
@@ -14,6 +15,7 @@ import (
 type Commons struct {
 	Development bool   `short:"D" env:"DEBUG,DEV,DEVELOPMENT" help:"Set to true to enable development mode with debug-level logging."`
 	Level       string `short:"l" env:"LOG_LEVEL" help:"Specify the logging level, options are: debug, info, warn, error, fatal." default:"info"`
+	Lang        string `env:"LANG" help:"Specify the print lang for tailored message." default:"en"`
 
 	Version Version `cmd:"" help:"Display version information."`
 	Licence Licence `cmd:"" help:"Show the application's licence."`
@@ -42,4 +44,12 @@ func (c *Commons) MustLogger() *zap.Logger {
 	}
 
 	return l
+}
+
+// Printer returns a new message.Printer configured for the specified language.
+// This printer can be used to format and print localized messages within
+// the command-line interface, ensuring that output is tailored to the user's
+// language preference.
+func (c *Commons) Printer() Printer {
+	return message.NewPrinter(message.MatchLanguage(c.Lang, "en"))
 }
