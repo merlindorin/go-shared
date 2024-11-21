@@ -101,6 +101,19 @@ func WithMethod(method string) Option {
 	}
 }
 
+// WithQuery returns an option function that sets one Query param for the request in the Params.
+func WithQuery(key, value string) Option {
+	return WithPreRequestHandler(
+		fmt.Sprintf("http_request_set_query_%s", key),
+		func(_ context.Context, req *http.Request) error {
+			q := req.URL.Query()
+			q.Add(key, value)
+			req.URL.RawQuery = q.Encode()
+			return nil
+		},
+	)
+}
+
 // WithExtraHeader returns an option function that sets one HTTP header for the request in the Params.
 func WithExtraHeader(key, value string) Option {
 	return WithPreRequestHandler(

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"golang.org/x/text/message"
 
 	"github.com/merlindorin/go-shared/pkg/logger"
@@ -36,7 +37,7 @@ func (c *Commons) Logger() (*zap.Logger, error) {
 	return logger.New(level, c.Development)
 }
 
-// MustLogger will panic if a logger can't be provided
+// MustLogger will panic if a logger can't be provided.
 func (c *Commons) MustLogger() *zap.Logger {
 	l, err := c.Logger()
 	if err != nil {

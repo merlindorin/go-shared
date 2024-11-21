@@ -4,11 +4,11 @@ vars:
   DEFAULT_LICENSE_TYPE: 'mit'
   DEFAULT_LICENSE_FILENAME: 'LICENSE.md'
   DEFAULT_LICENSE_NAME:
-    sh: echo "$(git config user.name) <$(git config user.email)>"
+    sh: gh api user -t '{{ "{{ .login }} <{{ .email }}>" }}'
   DEFAULT_LICENSE_YEAR:
     sh: date +'%Y'
   DEFAULT_LICENSE_PROJECT:
-    sh: basename "$PWD"
+    sh: gh repo view --json name -t '{{ "{{ .name }}" }}'
 
 tasks:
   default:
@@ -45,5 +45,9 @@ tasks:
       FILENAME: '{{.LICENSE_FILENAME | default .DEFAULT_LICENSE_FILENAME}}'
       YEAR: '{{.LICENSE_YEAR | default .DEFAULT_LICENSE_YEAR}}'
       PROJECT: '{{.LICENSE_PROJECT | default .DEFAULT_LICENSE_PROJECT}}'
+
+    status:
+      - test -f '{{ .FILENAME }}'
+
     cmds:
-      - license -n "{{.NAME}}" -y "{{.YEAR}}" {{if .PROJECT }}-p "{{.PROJECT}}"{{end}} -o {{.FILENAME}} {{.TYPE}}
+      - aqua exec license -n "{{.NAME}}" -y "{{.YEAR}}" {{if .PROJECT }}-p "{{.PROJECT}}"{{end}} -o {{.FILENAME}} {{.TYPE}}
