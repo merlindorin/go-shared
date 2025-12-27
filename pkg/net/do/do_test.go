@@ -3,8 +3,10 @@ package do_test
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/merlindorin/go-shared/pkg/net/do"
@@ -120,10 +122,10 @@ func TestDo(t *testing.T) {
 		)
 	})
 
-	t.Run("should return an error if the response cannot be processed", func(t *testing.T) {
+	t.Run("should return an error if the response cannot be processed with no error handler", func(t *testing.T) {
 		wantErr := fmt.Errorf("cannot process res")
 		mockClient := do.NewMockHttpClientDoer(t)
-		mockClient.EXPECT().Do(mock.Anything).Return(nil, nil)
+		mockClient.EXPECT().Do(mock.Anything).Return(&http.Response{Body: io.NopCloser(strings.NewReader(""))}, nil)
 
 		err := do.Do(
 			context.TODO(),
@@ -134,6 +136,25 @@ func TestDo(t *testing.T) {
 			}),
 		)
 
-		assert.Equal(t, err, wantErr)
+		assert.ErrorIs(t, err, wantErr)
+	})
+
+	t.Run("should return no error if an error handler process it", func(t *testing.T) {
+		mockClient := do.NewMockHttpClientDoer(t)
+		mockClient.EXPECT().Do(mock.Anything).Return(&http.Response{Body: io.NopCloser(strings.NewReader(""))}, nil)
+
+		err := do.Do(
+			context.TODO(),
+			&url.URL{},
+			do.WithClient(mockClient),
+			do.WithPostRequestHandler("mock", func(_ context.Context, _ *http.Request, _ *http.Response) error {
+				return fmt.Errorf("cannot process res")
+			}),
+			do.WithErrorHandler("mock", func(_ context.Context, _ *http.Request, _ *http.Response, e error) error {
+				return nil
+			}),
+		)
+
+		assert.NoError(t, err)
 	})
 }

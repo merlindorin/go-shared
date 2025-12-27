@@ -13,10 +13,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// Params is a structure that holds all the information
-// needed to make an HTTP request and process its response.
-// It includes HTTP client, request details, pre- and post-request handlers,
-// a logger, and a timing function for testing.
+// Params holds configuration for an HTTP request.
 type Params struct {
 	Client HTTPClientDoer
 
@@ -24,84 +21,90 @@ type Params struct {
 	Path   string
 	Body   io.Reader
 
-	PreRequestHandler  map[string]PreRequestHandlerFunc
-	PostRequestHandler map[string]PostRequestHandlerFunc
+	PreRequestHandlers  map[string]PreRequestHandlerFunc
+	PostRequestHandlers map[string]PostRequestHandlerFunc
+	ErrorHandlers       map[string]ErrorHandlerFunc
 
 	Logger *zap.Logger
 
 	now func() time.Time
 }
 
-// HTTPClientDoer performs a HTTP request.
+// HTTPClientDoer is an interface for executing HTTP requests.
 type HTTPClientDoer interface {
 	Do(req *http.Request) (*http.Response, error)
 }
 
-// NewParams initiates an instance of Params with default values.
-// It sets up the maps for pre-request and post-request handlers.
+// NewParams creates a new Params with initialized handler maps.
 func NewParams() *Params {
 	return &Params{
-		PreRequestHandler:  map[string]PreRequestHandlerFunc{},
-		PostRequestHandler: map[string]PostRequestHandlerFunc{},
+		PreRequestHandlers:  map[string]PreRequestHandlerFunc{},
+		PostRequestHandlers: map[string]PostRequestHandlerFunc{},
+		ErrorHandlers:       map[string]ErrorHandlerFunc{},
 	}
 }
 
-// PreRequestHandlerFunc represents a function that is invoked before making
-// an HTTP request. It has the chance to modify the request based on the context.
+// PreRequestHandlerFunc modifies an HTTP request before it is sent.
 type PreRequestHandlerFunc func(ctx context.Context, res *http.Request) error
 
-// Apply executes the PreRequestHandlerFunc on the given request, using the provided context.
+// Apply executes the handler on the request.
 func (receiver PreRequestHandlerFunc) Apply(ctx context.Context, req *http.Request) error {
 	return receiver(ctx, req)
 }
 
-// PostRequestHandlerFunc represents a function that is invoked after receiving
-// the HTTP response. It can be used to handle the response or its body accordingly.
+// PostRequestHandlerFunc processes an HTTP response after it is received.
 type PostRequestHandlerFunc func(ctx context.Context, req *http.Request, res *http.Response) error
 
-// Apply executes the PostRequestHandlerFunc on the given response, using the provided context.
+// Apply executes the handler on the request and response.
 func (receiver PostRequestHandlerFunc) Apply(ctx context.Context, req *http.Request, res *http.Response) error {
 	return receiver(ctx, req, res)
 }
 
-// Option is a function type that modifies parameters for an HTTP request.
+// ErrorHandlerFunc handles errors from post-request handlers.
+type ErrorHandlerFunc func(ctx context.Context, req *http.Request, res *http.Response, err error) error
+
+// Apply executes the error handler.
+func (receiver ErrorHandlerFunc) Apply(ctx context.Context, req *http.Request, res *http.Response, err error) error {
+	return receiver(ctx, req, res, err)
+}
+
+// Option configures Params.
 type Option func(params *Params)
 
-// Apply executes the Option on the given Params.
+// Apply applies the option to the Params.
 func (p Option) Apply(params *Params) {
 	p(params)
 }
 
-// WithLogger returns an option function that sets the logger in the Params.
+// WithLogger sets the logger.
 func WithLogger(logger *zap.Logger) Option {
 	return func(params *Params) {
 		params.Logger = logger
 	}
 }
 
-// WithNow returns an option function that sets the function to return current time
-// for timing or testing purposes in the Params.
+// WithNow sets the time function for timing and testing.
 func WithNow(fn func() time.Time) Option {
 	return func(params *Params) {
 		params.now = fn
 	}
 }
 
-// WithClient returns an option function that sets the HTTP client in the Params.
+// WithClient sets the HTTP client.
 func WithClient(cl HTTPClientDoer) Option {
 	return func(params *Params) {
 		params.Client = cl
 	}
 }
 
-// WithMethod returns an option function that sets the HTTP method for the request in the Params.
+// WithMethod sets the HTTP method (GET, POST, etc.).
 func WithMethod(method string) Option {
 	return func(params *Params) {
 		params.Method = method
 	}
 }
 
-// WithQuery returns an option function that sets one Query param for the request in the Params.
+// WithQuery adds a query parameter to the request URL.
 func WithQuery(key, value string) Option {
 	return WithPreRequestHandler(
 		fmt.Sprintf("http_request_set_query_%s", key),
@@ -114,7 +117,7 @@ func WithQuery(key, value string) Option {
 	)
 }
 
-// WithExtraHeader returns an option function that sets one HTTP header for the request in the Params.
+// WithExtraHeader sets a single HTTP header.
 func WithExtraHeader(key, value string) Option {
 	return WithPreRequestHandler(
 		fmt.Sprintf("http_request_set_header_%s", key),
@@ -125,13 +128,12 @@ func WithExtraHeader(key, value string) Option {
 	)
 }
 
-// WithExtraHeaderf returns an option function that formats a value according to its format and sets one HTTP
-// header for the request in the Params.
+// WithExtraHeaderf sets a single HTTP header with a formatted value.
 func WithExtraHeaderf(key, format string, a ...any) Option {
 	return WithExtraHeader(key, fmt.Sprintf(format, a...))
 }
 
-// WithHeader returns an option function that sets the HTTP header for the request in the Params.
+// WithHeader sets multiple HTTP headers from an http.Header map.
 func WithHeader(header http.Header) Option {
 	return WithPreRequestHandler(
 		"http_request_set_header",
@@ -146,7 +148,7 @@ func WithHeader(header http.Header) Option {
 	)
 }
 
-// WithContentLength returns an option function that sets the Content length for the request in the Params.
+// WithContentLength sets the Content-Length header.
 func WithContentLength(requestContent []byte) Option {
 	return WithPreRequestHandler(
 		"http_request_content_length",
@@ -157,23 +159,21 @@ func WithContentLength(requestContent []byte) Option {
 	)
 }
 
-// WithPath returns an option function that sets the request path in the Params.
-// The path can be formatted with the provided arguments.
+// WithPath sets the request path with optional fmt.Sprintf formatting.
 func WithPath(path string, a ...any) Option {
 	return func(params *Params) {
 		params.Path = fmt.Sprintf(path, a...)
 	}
 }
 
-// WithBody returns an option function that sets the request body in the Params.
+// WithBody sets the request body.
 func WithBody(b io.Reader) Option {
 	return func(params *Params) {
 		params.Body = b
 	}
 }
 
-// WithMarshalBody returns an option function that sets a pre-request handler
-// to marshal the provided value into JSON and use it as the request body.
+// WithMarshalBody marshals the value to JSON and sets it as the request body.
 func WithMarshalBody(v any) Option {
 	return WithPreRequestHandler(
 		"http_request_body_json_unmarshal",
@@ -190,16 +190,14 @@ func WithMarshalBody(v any) Option {
 	)
 }
 
-// WithPreRequestHandler returns an option that associates the provided
-// PreRequestHandlerFunc with the given name for use by Params.
+// WithPreRequestHandler registers a named pre-request handler.
 func WithPreRequestHandler(name string, f PreRequestHandlerFunc) Option {
 	return func(params *Params) {
-		params.PreRequestHandler[name] = f
+		params.PreRequestHandlers[name] = f
 	}
 }
 
-// WithJSONRequest returns an option function that sets a pre-request handler
-// in the Params to automatically set "Content-Type" header to "application/json".
+// WithJSONRequest sets Content-Type to "application/json".
 func WithJSONRequest() Option {
 	return WithPreRequestHandler(
 		"http_request_header_json",
@@ -210,16 +208,21 @@ func WithJSONRequest() Option {
 	)
 }
 
-// WithPostRequestHandler returns an option that associates the provided
-// PostRequestHandlerFunc with the given name for use by Params.
+// WithPostRequestHandler registers a named post-request handler.
 func WithPostRequestHandler(name string, f PostRequestHandlerFunc) Option {
 	return func(params *Params) {
-		params.PostRequestHandler[name] = f
+		params.PostRequestHandlers[name] = f
 	}
 }
 
-// WithUnmarshalBody returns an option function that sets a post-request handler
-// to unmarshal the response body into the provided value.
+// WithErrorHandler registers a named error handler.
+func WithErrorHandler(name string, f ErrorHandlerFunc) Option {
+	return func(params *Params) {
+		params.ErrorHandlers[name] = f
+	}
+}
+
+// WithUnmarshalBody unmarshals the JSON response body into the provided value.
 func WithUnmarshalBody(v any) Option {
 	return WithPostRequestHandler(
 		"http_response_body_json_unmarshal",
