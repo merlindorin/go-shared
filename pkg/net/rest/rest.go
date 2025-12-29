@@ -11,19 +11,24 @@ import (
 // Rest is a concrete implementation of the Requester interface.
 // It uses a base URL and a set of options that can be customized for each request.
 type Rest struct {
+	do.Doer
+
 	baseOptions []do.Option
 	baseURL     *url.URL
 }
 
 // NewRest creates a new Rest client with a given base URL and options.
 func NewRest(baseURL *url.URL, options ...do.Option) *Rest {
-	return &Rest{baseOptions: options, baseURL: baseURL}
-}
+	r := &Rest{
+		baseOptions: options,
+		baseURL:     baseURL,
+	}
 
-// Do makes an HTTP request using the base URL and options of the Rest client
-// along with additional options provided for the specific request.
-func (r *Rest) Do(ctx context.Context, options ...do.Option) error {
-	return do.Do(ctx, r.baseURL, append(r.baseOptions, options...)...)
+	r.Doer = do.D(func(ctx context.Context, options ...do.Option) error {
+		return do.Do(ctx, baseURL, append(r.baseOptions, options...)...)
+	})
+
+	return r
 }
 
 // New create a new instance with new default options.

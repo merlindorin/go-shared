@@ -21,6 +21,6 @@ func NewVersion(name, version, commit, buildSource, date string) Version {
 // required to integrate with the kong CLI parsing library.
 func (u Version) Run() error {
 	//nolint:forbidigo // using a custom writer is not necessary here
-	fmt.Print(u.BuildInfo.String())
+	fmt.Print(u.String())
 	return nil
 }

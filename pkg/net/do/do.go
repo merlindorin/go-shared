@@ -2,6 +2,7 @@ package do
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -46,16 +47,18 @@ func Do(ctx context.Context, u *url.URL, options ...Option) error {
 	}
 
 	log.Debug("sendRequest", zap.Duration("duration", time.Since(start)))
-	res, err := p.Client.Do(req)
+	res, err := p.Client.Do(req) //nolint:bodyclose // it is managed below
 	if err != nil {
 		log.Error("cannot sendRequest", zap.Error(err))
 		return err
 	}
 
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			log.Error("cannot close Body", zap.Error(err))
+	defer func(body io.ReadCloser) {
+		if body != nil {
+			if er := body.Close(); er != nil {
+				log.Error("cannot close response body", zap.Error(er))
+				err = errors.Join(err)
+			}
 		}
 	}(res.Body)
 

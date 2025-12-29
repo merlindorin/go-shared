@@ -9,6 +9,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/merlindorin/go-shared/pkg/must"
 	"github.com/merlindorin/go-shared/pkg/net/do"
 
 	"github.com/stretchr/testify/assert"
@@ -18,7 +19,7 @@ import (
 func TestDo(t *testing.T) {
 	t.Run("should make request with default options", func(t *testing.T) {
 		wantMethod := http.MethodGet
-		wantURL, _ := url.Parse("http://localhost")
+		wantURL := must.Get(url.Parse("http://localhost"))
 		matchRequest := mock.MatchedBy(func(req *http.Request) bool {
 			assert.Equal(t, req.Method, wantMethod)
 			assert.Equal(t, req.URL, wantURL)
@@ -26,13 +27,13 @@ func TestDo(t *testing.T) {
 		})
 
 		mockClient := do.NewMockHttpClientDoer(t)
-		mockClient.EXPECT().Do(matchRequest).Return(nil, nil).Once()
+		mockClient.EXPECT().Do(matchRequest).Return(&http.Response{}, nil).Once()
 
 		_ = do.Do(context.TODO(), wantURL, do.WithClient(mockClient))
 	})
 
 	t.Run("should return an error if the request cannot be build", func(t *testing.T) {
-		assert.ErrorContains(t, do.Do(context.TODO(), &url.URL{}), "net/http: nil Context")
+		assert.ErrorContains(t, do.Do(context.TODO(), &url.URL{}), "unsupported protocol scheme")
 	})
 
 	t.Run("should return an error if the request cannot be made", func(t *testing.T) {
@@ -51,7 +52,7 @@ func TestDo(t *testing.T) {
 		mockClient.EXPECT().Do(mock.MatchedBy(func(req *http.Request) bool {
 			assert.Equal(t, req.Context(), wantCtx)
 			return true
-		})).Return(nil, nil)
+		})).Return(&http.Response{}, nil)
 
 		_ = do.Do(
 			wantCtx,
@@ -70,7 +71,7 @@ func TestDo(t *testing.T) {
 
 	t.Run("should be able to prepare request ", func(t *testing.T) {
 		wantMethod := http.MethodOptions
-		wantURL, _ := url.Parse("https://some.new")
+		wantURL := must.Get(url.Parse("https://some.new"))
 		matchRequest := mock.MatchedBy(func(req *http.Request) bool {
 			assert.Equal(t, req.Method, wantMethod)
 			assert.Equal(t, req.URL, wantURL)
@@ -150,7 +151,7 @@ func TestDo(t *testing.T) {
 			do.WithPostRequestHandler("mock", func(_ context.Context, _ *http.Request, _ *http.Response) error {
 				return fmt.Errorf("cannot process res")
 			}),
-			do.WithErrorHandler("mock", func(_ context.Context, _ *http.Request, _ *http.Response, e error) error {
+			do.WithErrorHandler("mock", func(_ context.Context, _ *http.Request, _ *http.Response, _ error) error {
 				return nil
 			}),
 		)
