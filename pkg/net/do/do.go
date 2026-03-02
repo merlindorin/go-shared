@@ -68,7 +68,7 @@ func Do(ctx context.Context, u *url.URL, options ...Option) error {
 
 		if err = postRequestHandler.Apply(ctx, req, res); err != nil {
 			log.Info("cannot handle response", zap.Error(err), zap.String("postRequestHandlerName", name))
-			continue
+			break
 		}
 	}
 
