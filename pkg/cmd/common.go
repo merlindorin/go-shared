@@ -11,8 +11,31 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
-// Commons defines the common flags and embedded commands for printing version
-// and licence information, utilized by the command-line interface.
+// Commons defines the common flags and embedded commands shared across all CLI applications.
+// It provides development mode toggling, log level configuration, language selection,
+// and built-in version/licence subcommands.
+//
+// Usage:
+//
+//	type CLI struct {
+//	    cmd.Commons
+//	    Run RunCmd `cmd:"" default:"withargs" help:"Start the application."`
+//	}
+//
+//	type RunCmd struct{}
+//
+//	func (r *RunCmd) Run(commons *cmd.Commons) error {
+//	    logger := commons.MustLogger()
+//	    defer logger.Sync()
+//	    logger.Info("starting application")
+//	    return nil
+//	}
+//
+//	func main() {
+//	    var cli CLI
+//	    ctx := kong.Parse(&cli, kong.DefaultEnvars("MYAPP"))
+//	    _ = ctx.Run()
+//	}
 type Commons struct {
 	Development bool   `short:"D" env:"DEBUG,DEV,DEVELOPMENT" help:"Set to true to enable development mode with debug-level logging."`
 	Level       string `short:"l" env:"LOG_LEVEL" help:"Specify the logging level, options are: debug, info, warn, error, fatal." default:"info"`

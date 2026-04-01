@@ -9,6 +9,33 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
+// Postgres provides CLI flags for configuring a PostgreSQL connection pool.
+//
+// Usage:
+//
+//	type CLI struct {
+//	    cmd.Commons
+//	    cmd.Postgres `embed:"" prefix:""`
+//	    Run RunCmd `cmd:"" default:"withargs" help:"Start the application."`
+//	}
+//
+//	type RunCmd struct{}
+//
+//	func (r *RunCmd) Run(ctx context.Context, pg *cmd.Postgres) error {
+//	    pool, err := pg.Pool(ctx)
+//	    if err != nil {
+//	        return err
+//	    }
+//	    defer pool.Close()
+//	    // ...
+//	    return nil
+//	}
+//
+//	func main() {
+//	    var cli CLI
+//	    ctx := kong.Parse(&cli, kong.DefaultEnvars("MYAPP"))
+//	    _ = ctx.Run()
+//	}
 type Postgres struct {
 	Host            string        `name:"postgres-host" help:"PostgreSQL host" default:"localhost"`
 	Port            int           `name:"postgres-port" help:"PostgreSQL port" default:"5432"`

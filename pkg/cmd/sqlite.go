@@ -8,6 +8,33 @@ import (
 	_ "modernc.org/sqlite"
 )
 
+// SQLite provides CLI flags for configuring a SQLite database connection.
+//
+// Usage:
+//
+//	type CLI struct {
+//	    cmd.Commons
+//	    cmd.SQLite `embed:"" prefix:""`
+//	    Run RunCmd `cmd:"" default:"withargs" help:"Start the application."`
+//	}
+//
+//	type RunCmd struct{}
+//
+//	func (r *RunCmd) Run(sq *cmd.SQLite) error {
+//	    db, err := sq.Open()
+//	    if err != nil {
+//	        return err
+//	    }
+//	    defer db.Close()
+//	    // ...
+//	    return nil
+//	}
+//
+//	func main() {
+//	    var cli CLI
+//	    ctx := kong.Parse(&cli, kong.DefaultEnvars("MYAPP"))
+//	    _ = ctx.Run()
+//	}
 type SQLite struct {
 	Path            string        `name:"sqlite-path" help:"SQLite database file path" default:":memory:"`
 	JournalMode     string        `name:"sqlite-journal-mode" help:"SQLite journal mode" default:"wal"`

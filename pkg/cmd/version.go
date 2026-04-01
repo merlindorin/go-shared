@@ -8,6 +8,30 @@ import (
 
 // Version holds detailed build information for an application, including the
 // name, the specific version string, commit hash, the source of the build, and the build date.
+// It is automatically registered as a subcommand when embedded via [Commons].
+//
+// Usage:
+//
+//	var (
+//	    version     = "dev"
+//	    commit      = "none"
+//	    buildSource = "unknown"
+//	    date        = "unknown"
+//	)
+//
+//	func main() {
+//	    var cli CLI
+//	    ctx := kong.Parse(&cli,
+//	        kong.DefaultEnvars("MYAPP"),
+//	        kong.Bind(cmd.NewVersion("myapp", version, commit, buildSource, date)),
+//	    )
+//	    _ = ctx.Run()
+//	}
+//
+// Then run:
+//
+//	$ myapp version
+//	name=myapp, version=dev, commit=none, buildDate=unknown, buildSource=unknown
 type Version struct {
 	buildinfo.BuildInfo
 }

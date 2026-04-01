@@ -10,6 +10,30 @@ import (
 	"go.uber.org/zap"
 )
 
+// HTTPServer provides CLI flags for configuring an HTTP server.
+// It handles binding, timeouts, and graceful shutdown.
+//
+// Usage:
+//
+//	type CLI struct {
+//	    cmd.Commons
+//	    cmd.HTTPServer `embed:"" prefix:""`
+//	    Run RunCmd `cmd:"" default:"withargs" help:"Start the application."`
+//	}
+//
+//	type RunCmd struct{}
+//
+//	func (r *RunCmd) Run(srv *cmd.HTTPServer) error {
+//	    ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+//	    defer cancel()
+//	    return srv.Start(ctx, zap.L(), mux)()
+//	}
+//
+//	func main() {
+//	    var cli CLI
+//	    ctx := kong.Parse(&cli, kong.DefaultEnvars("MYAPP"))
+//	    _ = ctx.Run()
+//	}
 type HTTPServer struct {
 	Host              string        `name:"http-host" help:"Host to bind the server to" default:"0.0.0.0"`
 	Port              int           `name:"http-port" help:"Port to bind the server to" default:"8080"`

@@ -5,8 +5,26 @@ import (
 )
 
 // Licence holds the licence content of an application.
-// It is constructed in a manner that allows Kong CLI library to recognize
-// the licence command and display the content accordingly.
+// It is automatically registered as a subcommand when embedded via [Commons].
+//
+// Usage:
+//
+//	//go:embed LICENSE
+//	var license string
+//
+//	func main() {
+//	    var cli CLI
+//	    ctx := kong.Parse(&cli,
+//	        kong.DefaultEnvars("MYAPP"),
+//	        kong.Bind(cmd.NewLicence(license)),
+//	    )
+//	    _ = ctx.Run()
+//	}
+//
+// Then run:
+//
+//	$ myapp licence
+//	MIT License ...
 type Licence struct {
 	content string
 }
