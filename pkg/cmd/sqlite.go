@@ -9,16 +9,16 @@ import (
 )
 
 type SQLite struct {
-	Path            string        `env:"SQLITE_PATH" help:"SQLite database file path" default:":memory:"`
-	JournalMode     string        `env:"SQLITE_JOURNAL_MODE" help:"SQLite journal mode" default:"wal"`
-	BusyTimeout     int           `env:"SQLITE_BUSY_TIMEOUT" help:"Busy timeout in milliseconds" default:"5000"`
-	ForeignKeys     bool          `env:"SQLITE_FOREIGN_KEYS" help:"Enable foreign keys" default:"true"`
-	Synchronous     string        `env:"SQLITE_SYNCHRONOUS" help:"Synchronous mode" default:"normal"`
-	CacheSize       int           `env:"SQLITE_CACHE_SIZE" help:"Cache size in pages (negative for KiB)" default:"-2000"`
-	MaxOpenConns    int           `env:"SQLITE_MAX_OPEN_CONNS" help:"Max number of open connections" default:"10"`
-	MaxIdleConns    int           `env:"SQLITE_MAX_IDLE_CONNS" help:"Max number of idle connections" default:"5"`
-	ConnMaxLifetime time.Duration `env:"SQLITE_CONN_MAX_LIFETIME" help:"Max lifetime of a connection" default:"1h"`
-	ConnMaxIdleTime time.Duration `env:"SQLITE_CONN_MAX_IDLE_TIME" help:"Max idle time of a connection" default:"30m"`
+	Path            string        `name:"sqlite-path" help:"SQLite database file path" default:":memory:"`
+	JournalMode     string        `name:"sqlite-journal-mode" help:"SQLite journal mode" default:"wal"`
+	BusyTimeout     int           `name:"sqlite-busy-timeout" help:"Busy timeout in milliseconds" default:"5000"`
+	ForeignKeys     bool          `name:"sqlite-foreign-key" help:"Enable foreign keys" default:"true"`
+	Synchronous     string        `name:"sqlite-synchronous" help:"Synchronous mode" default:"normal"`
+	CacheSize       int           `name:"sqlite-cache-size" help:"Cache size in pages (negative for KiB)" default:"-2000"`
+	MaxOpenConns    int           `name:"sqlite-max-open-conns" help:"Max number of open connections" default:"10"`
+	MaxIdleConns    int           `name:"sqlite-max-idle-conns" help:"Max number of idle connections" default:"5"`
+	ConnMaxLifetime time.Duration `name:"sqlite-conn-max-lifetime" help:"Max lifetime of a connection" default:"1h"`
+	ConnMaxIdleTime time.Duration `name:"sqlite-conn-max-idle-time" help:"Max idle time of a connection" default:"30m"`
 }
 
 func (s *SQLite) DSN() string {

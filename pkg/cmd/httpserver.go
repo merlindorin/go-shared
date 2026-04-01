@@ -11,13 +11,13 @@ import (
 )
 
 type HTTPServer struct {
-	Host              string        `env:"HTTP_HOST" help:"Host to bind the server to" default:"0.0.0.0"`
-	Port              int           `env:"HTTP_PORT" help:"Port to bind the server to" default:"8080"`
-	ReadHeaderTimeout time.Duration `env:"HTTP_READ_HEADER_TIMEOUT" help:"Max duration for reading the request header" default:"5s"`
-	ReadTimeout       time.Duration `env:"HTTP_READ_TIMEOUT" help:"Max duration for reading the entire request" default:"30s"`
-	WriteTimeout      time.Duration `env:"HTTP_WRITE_TIMEOUT" help:"Max duration for writing the response" default:"60s"`
-	IdleTimeout       time.Duration `env:"HTTP_IDLE_TIMEOUT" help:"Max duration to wait for the next request" default:"120s"`
-	GracefulPeriod    time.Duration `env:"HTTP_GRACEFUL_PERIOD" help:"Period to wait for graceful shutdown" default:"5s"`
+	Host              string        `name:"http-host" help:"Host to bind the server to" default:"0.0.0.0"`
+	Port              int           `name:"http-port" help:"Port to bind the server to" default:"8080"`
+	ReadHeaderTimeout time.Duration `name:"http-read-header-timeout" help:"Max duration for reading the request header" default:"5s"`
+	ReadTimeout       time.Duration `name:"http-read-timeout" help:"Max duration for reading the entire request" default:"30s"`
+	WriteTimeout      time.Duration `name:"http-write-timeout" help:"Max duration for writing the response" default:"60s"`
+	IdleTimeout       time.Duration `name:"http-idle-timeout" help:"Max duration to wait for the next request" default:"120s"`
+	GracefulPeriod    time.Duration `name:"http-graceful-period" help:"Period to wait for graceful shutdown" default:"5s"`
 }
 
 func (srv *HTTPServer) Addr() string {

@@ -10,16 +10,16 @@ import (
 )
 
 type Postgres struct {
-	Host            string        `env:"POSTGRES_HOST" help:"PostgreSQL host" default:"localhost"`
-	Port            int           `env:"POSTGRES_PORT" help:"PostgreSQL port" default:"5432"`
-	User            string        `env:"POSTGRES_USER" help:"PostgreSQL user" default:"postgres"`
-	Password        string        `env:"POSTGRES_PASSWORD" help:"PostgreSQL password"`
-	Database        string        `env:"POSTGRES_DATABASE" help:"PostgreSQL database"`
-	SSLMode         string        `env:"POSTGRES_SSL_MODE" help:"PostgreSQL SSL mode" default:"disable"`
-	MaxConns        int32         `env:"POSTGRES_MAX_CONNS" help:"Max number of connections" default:"10"`
-	MinConns        int32         `env:"POSTGRES_MIN_CONNS" help:"Min number of connections" default:"2"`
-	MaxConnLifetime time.Duration `env:"POSTGRES_MAX_CONN_LIFETIME" help:"Max lifetime of a connection" default:"1h"`
-	MaxConnIdleTime time.Duration `env:"POSTGRES_MAX_CONN_IDLE_TIME" help:"Max idle time of a connection" default:"30m"`
+	Host            string        `name:"postgres-host" help:"PostgreSQL host" default:"localhost"`
+	Port            int           `name:"postgres-port" help:"PostgreSQL port" default:"5432"`
+	User            string        `name:"postgres-user" help:"PostgreSQL user" default:"postgres"`
+	Password        string        `name:"postgres-password" help:"PostgreSQL password"`
+	Database        string        `name:"postgres-database" help:"PostgreSQL database"`
+	SSLMode         string        `name:"postgres-ssl-mode" help:"PostgreSQL SSL mode" default:"disable"`
+	MaxConns        int32         `name:"postgres-max-conns" help:"Max number of connections" default:"10"`
+	MinConns        int32         `name:"postgres-min-conns" help:"Min number of connections" default:"2"`
+	MaxConnLifetime time.Duration `name:"postgres-max-conn-lifetime" help:"Max lifetime of a connection" default:"1h"`
+	MaxConnIdleTime time.Duration `name:"postgres-max-conn-idle-time" help:"Max idle time of a connection" default:"30m"`
 }
 
 func (p *Postgres) DSN() string {
