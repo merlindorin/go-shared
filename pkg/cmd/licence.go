@@ -37,7 +37,13 @@ func NewLicence(s string) Licence {
 // Run prints the licence content to the console when the licence command is invoked.
 // This method satisfies the Kong interface contract for command execution.
 func (l Licence) Run() error {
+	content := l.content
+	if content == "" {
+		content = "Proprietary – All rights reserved.\n"
+	}
+
 	//nolint:forbidigo // using a custom writer is not necessary here
-	fmt.Printf("%s", l.content)
+	fmt.Print(content)
+
 	return nil
 }
