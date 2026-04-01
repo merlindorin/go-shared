@@ -44,6 +44,10 @@ type HTTPServer struct {
 	GracefulPeriod    time.Duration `name:"http-graceful-period" help:"Period to wait for graceful shutdown" default:"5s"`
 }
 
+func NewHTTPServer() *HTTPServer {
+	return &HTTPServer{}
+}
+
 func (srv *HTTPServer) Addr() string {
 	return fmt.Sprintf("%s:%d", srv.Host, srv.Port)
 }

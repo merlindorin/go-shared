@@ -49,6 +49,10 @@ type Postgres struct {
 	MaxConnIdleTime time.Duration `name:"postgres-max-conn-idle-time" help:"Max idle time of a connection" default:"30m"`
 }
 
+func NewPostgres() *Postgres {
+	return &Postgres{}
+}
+
 func (p *Postgres) DSN() string {
 	database := p.Database
 

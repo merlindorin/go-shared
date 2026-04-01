@@ -48,6 +48,10 @@ type SQLite struct {
 	ConnMaxIdleTime time.Duration `name:"sqlite-conn-max-idle-time" help:"Max idle time of a connection" default:"30m"`
 }
 
+func NewSQLite() *SQLite {
+	return &SQLite{}
+}
+
 func (s *SQLite) DSN() string {
 	fk := 0
 	if s.ForeignKeys {
