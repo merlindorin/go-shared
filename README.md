@@ -23,6 +23,7 @@ This shared library includes a range of features designed to simplify developmen
   communication.
 * **Service Discovery**: Implementations for mDNS and SSDP service discovery protocols.
 * **Command-Line Interface**: Utilities to assist in building CLI applications, including version and license commands.
+* **Database**: Ready-to-use PostgreSQL (via pgx) and SQLite (via modernc.org/sqlite) configurations with functional options.
 
 Each feature is encapsulated in its own module within the library, providing a modular approach to using specific
 functionalities.
