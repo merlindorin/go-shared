@@ -113,6 +113,26 @@ type Config struct {
 	ConfigFile kong.ConfigFlag `json:"config" name:"config" short:"c" help:"Full path to a user-supplied config file"`
 }
 
+// configRegistry is the package-level fallback used to recover
+// options applied via [NewConfig] when kong allocates its own
+// embedded Config (which it does for `*Config` fields tagged
+// `embed:""`, regardless of any value we pre-populated in the
+// CLI struct). [BeforeResolve] consults this registry when its
+// own receiver carries zero values, so `WithGroup` / `WithName`
+// take effect even though kong wires up a fresh Config under the
+// hood.
+//
+// Single-instance assumption: a binary uses at most one Config
+// per parse. Callers that need multiple should construct each
+// independently and bind via kong.Vars / kong.Bind rather than
+// embedding more than one in the same CLI struct.
+//
+//nolint:gochecknoglobals // last-applied options used as a fallback
+var configRegistry struct {
+	name  string
+	group string
+}
+
 func NewConfig(opts ...Option) *Config {
 	c := &Config{}
 
@@ -120,19 +140,30 @@ func NewConfig(opts ...Option) *Config {
 		opt.Apply(c)
 	}
 
+	configRegistry.name = c.name
+	configRegistry.group = c.group
+
 	return c
 }
 
 func (c *Config) BeforeResolve(k *kong.Kong) error {
 	name := c.name
 	if name == "" {
+		name = configRegistry.name
+	}
+	if name == "" {
 		name = k.Model.Name
 	}
 
-	etcFileName := path.Join("/etc", c.group, fmt.Sprintf("%s.yaml", name))
-	homeFileName := path.Join("~", fmt.Sprintf(".%s", c.group), fmt.Sprintf("%s.yaml", name))
+	group := c.group
+	if group == "" {
+		group = configRegistry.group
+	}
 
-	if c.group == "" {
+	etcFileName := path.Join("/etc", group, fmt.Sprintf("%s.yaml", name))
+	homeFileName := path.Join("~", fmt.Sprintf(".%s", group), fmt.Sprintf("%s.yaml", name))
+
+	if group == "" {
 		etcFileName = path.Join("/etc", name, "config.yaml")
 		homeFileName = path.Join("~", fmt.Sprintf(".%s", name), "config.yaml")
 	}
